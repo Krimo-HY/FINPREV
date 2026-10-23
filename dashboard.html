@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FINPREV-tietokanta </title>
+  <style>
+    :root{--ink:#353b67;--muted:#697092;--line:#d9dcf0;--bg:#f7f7fc;--card:#fff;--accent:#403fb1;--accent-dark:#656ea9;--accent-light:#eef0fb;--shadow:0 8px 24px #353b6712}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Helvetica,Arial,sans-serif}
+    header{background:linear-gradient(125deg,#737dbb,#403fb1);color:#fff;padding:42px max(22px,calc((100% - 1180px)/2))}
+    header h1{font-size:clamp(1.8rem,4vw,2.8rem);margin:0 0 8px;letter-spacing:-.03em}header p{max-width:760px;margin:0;color:#e6f4f3}header .header-note{margin-top:1rem}header .header-citations{max-width:900px;margin-top:1rem;font-size:.84rem;line-height:1.45}header .header-citations p+p{margin-top:.5rem}
+    main{max-width:1180px;margin:28px auto 70px;padding:0 18px}.panel,.result-card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+    .panel{padding:22px;margin-bottom:22px}.panel h2{font-size:1.15rem;margin:0 0 15px}.types{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    button,.select-wrap select{font:inherit}.type-button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:14px 12px;text-align:left;color:var(--ink);cursor:pointer;min-height:62px;font-weight:650}
+    .type-button:hover{border-color:var(--accent-dark)}.type-button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .filters{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.select-wrap label{display:flex;align-items:center;gap:6px;font-weight:650;font-size:.9rem;margin-bottom:5px}.select-wrap select{width:100%;border:1px solid #c7cbe5;border-radius:8px;padding:10px;background:#fff;color:var(--ink)}.help{position:relative;display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border:1px solid var(--accent-dark);border-radius:50%;background:var(--accent-light);color:var(--accent-dark);font-size:.78rem;font-weight:750;cursor:help}.help:focus{outline:3px solid #c6c9ec;outline-offset:2px}.help-text{position:absolute;z-index:2;left:24px;top:-8px;width:330px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;box-shadow:var(--shadow);color:var(--ink);font-size:.85rem;font-weight:400;line-height:1.35;white-space:pre-line;visibility:hidden;opacity:0;transition:opacity .15s}.help:hover .help-text,.help:focus .help-text,.help[aria-expanded="true"] .help-text{visibility:visible;opacity:1}
+    .range-control{position:relative;padding:8px 3px 0}.range-values{position:relative;height:35px;margin:0 9px}.range-track,.range-selected{position:absolute;top:10px;left:0;right:0;height:6px;border-radius:6px}.range-track{background:#d9dcf0}.range-selected{background:var(--accent)}.range-input{position:absolute;top:0;left:-3px;width:calc(100% + 6px);height:26px;margin:0;pointer-events:none;appearance:none;background:transparent}.range-input::-webkit-slider-thumb{width:20px;height:20px;appearance:none;border:3px solid #fff;border-radius:50%;background:var(--accent-dark);box-shadow:0 1px 4px #353b6750;cursor:grab;pointer-events:auto}.range-input::-moz-range-thumb{width:14px;height:14px;border:3px solid #fff;border-radius:50%;background:var(--accent-dark);box-shadow:0 1px 4px #353b6750;cursor:grab;pointer-events:auto}.range-input:focus{outline:none}.range-input:focus::-webkit-slider-thumb{outline:3px solid #c6c9ec;outline-offset:2px}.range-labels{display:flex;justify-content:space-between;gap:4px;color:var(--muted);font-size:.8rem;padding:0 0}.wide-range{grid-column:span 2}.full-range{grid-column:1/-1}
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}.count{color:var(--muted);font-size:.95rem}.toolbar-actions{display:flex;align-items:center;gap:14px}.sort-label{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:.9rem;font-weight:650}.sort-label select{border:1px solid #b8cbd5;border-radius:8px;padding:8px;background:#fff;color:var(--ink);font:inherit}.clear{border:0;background:none;color:var(--accent);cursor:pointer;text-decoration:underline}
+    .results{display:grid;gap:14px}.result-card{padding:19px 21px}.result-card h3{margin:0 0 11px;font-size:1.25rem;line-height:1.25}.meta{display:flex;flex-wrap:wrap;gap:7px 16px;color:var(--muted);font-size:.92rem;margin-bottom:13px}.meta strong{color:var(--ink)}.details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px;border-top:1px solid var(--line);padding-top:13px}.details.compact{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.details.process-details{grid-template-columns:repeat(2,minmax(0,1fr))}.detail{min-width:0}.detail.citation-detail{grid-column:1/-1}.detail.citation-detail dd{font-size:.82rem}.detail dt{color:var(--muted);font-size:.82rem;font-weight:700}.detail dd{margin:1px 0 0;white-space:pre-wrap}.setup-value{display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;background:#9da4dc;color:#fff;font-size:1.05rem;font-weight:700}.back-to-top{position:fixed;right:24px;bottom:24px;z-index:3;display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;border:0;border-radius:50%;background:#9da4dc;color:#fff;font-size:1.6rem;font-weight:700;line-height:1;box-shadow:var(--shadow);cursor:pointer}.back-to-top:hover{background:#858dc9}.back-to-top:focus{outline:3px solid #656ea9;outline-offset:3px}.back-to-top[hidden]{display:none}.empty{text-align:center;padding:42px;color:var(--muted)}footer{max-width:1180px;margin:0 auto;padding:0 18px 35px;color:var(--muted);font-size:.85rem}
+    @media(max-width:700px){.types,.filters{grid-template-columns:1fr}.details{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.back-to-top{right:16px;bottom:16px}}
+    .load-error{color:#8b1e2d;border-color:#e7b7bd;background:#fff7f7}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>FINPREV-tietokanta (Beta)</h1>
+    <p>Selaa rikollisuuden ehkäisyyn liittyviä arviointeja ja kirjallisuuskatsauksia valitsemalla ensin aineiston tyyppi ja tarkentamalla hakua alla.</p>
+    <p class="header-note">Tietokanta on avoimesti käytettävissä. Pyydämme kuitenkin viittaamaan tietokannasta haettuihin tietoihin alla olevan ohjeen mukaisesti.</p>
+    <div class="header-citations">
+      <p>Kivivuori, J., Raeste, A., & Mukkala, J. (2026). Rikoksentorjunnan arviointitutkimuksen tietokanta (FINPREV). Helsinki: Helsingin yliopisto, Kriminologian ja oikeuspolitiikan instituutti.</p>
+    </div>
+  </header>
+  <main>
+    <section class="panel" aria-labelledby="type-heading">
+      <h2 id="type-heading">Valitse aineiston tyyppi</h2>
+      <div class="types" id="types"></div>
+    </section>
+    <section class="panel" aria-labelledby="filter-heading">
+      <h2 id="filter-heading">Rajaa tuloksia</h2>
+      <div class="filters" id="filters"></div>
+    </section>
+    <section aria-labelledby="results-heading">
+      <div class="toolbar"><h2 id="results-heading">Tulokset</h2><span class="count" id="count"></span><div class="toolbar-actions"><label class="sort-label" for="sort">Järjestä: <select id="sort"><option value="year">Vuosi (uusin ensin)</option><option value="author">Tekijän nimi (aakkosjärjestys)</option><option value="impact">Vaikuttavuus (vaikuttavin ensin)</option></select></label><button class="clear" id="clear" type="button">Tyhjennä rajaukset</button></div></div>
+      <div class="results" id="results"></div>
+    </section>
+  </main>
+  <footer>
+    <div>* Opinnäytetyö</div>
+    <div>FINPREV-tietokanta on Helsingin yliopiston Kriminologian ja oikeuspolitiikan instituutin ja Rikoksentorjuntaneuvoston ylläpitämä. Tiedot ovat tutkijoiden itsensä täyttämiä.</div>
+  </footer>
+  <button class="back-to-top" id="back-to-top" type="button" aria-label="Takaisin sivun alkuun" title="Takaisin sivun alkuun" hidden>↑</button>
+  <script>
+    let rows = [];
+    function parseDelimitedText(text, delimiter) {
+      const matrix = [];
+      let record = [], field = "", quoted = false;
+      text = text.replace(/^\uFEFF/, "");
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (quoted) {
+          if (char === '"' && text[i + 1] === '"') { field += '"'; i++; }
+          else if (char === '"') quoted = false;
+          else field += char;
+        } else if (char === '"' && field.length === 0) quoted = true;
+        else if (char === delimiter) { record.push(field); field = ""; }
+        else if (char === "\n" || char === "\r") {
+          if (char === "\r" && text[i + 1] === "\n") i++;
+          record.push(field); matrix.push(record); record = []; field = "";
+        } else field += char;
+      }
+      if (field.length || record.length) { record.push(field); matrix.push(record); }
+      if (!matrix.length) throw new Error("CSV-tiedosto on tyhjä.");
+      const headers = matrix.shift().map(header => header.trim());
+      if (!headers.includes("Tyyppi") || !headers.includes("Otsikko") || !headers.includes("Vuosi")) {
+        throw new Error("CSV-tiedostosta puuttuu yksi tai useampi vaadittu sarake (Tyyppi, Otsikko, Vuosi).");
+      }
+      return matrix.filter(values => values.some(value => value.trim() !== "")).map(values => {
+        const row = {};
+        headers.forEach((header, index) => { if (header) row[header] = values[index] ?? ""; });
+        return row;
+      });
+    }
+    async function loadRows() {
+      countEl.textContent = "Ladataan aineistoa…";
+      resultsEl.textContent = "Ladataan aineistoa…";
+      try {
+        const response = await fetch("./finprev_data.csv", { cache: "no-cache" });
+        if (!response.ok) throw new Error(`CSV-tiedoston lataus epäonnistui (HTTP ${response.status}).`);
+        rows = parseDelimitedText(await response.text(), ";");
+        render();
+      } catch (error) {
+        countEl.textContent = "Aineistoa ei voitu ladata";
+        resultsEl.innerHTML = `<div class="panel load-error"><strong>Aineistoa ei voitu ladata.</strong><br>${escapeHtml(error.message || String(error))}<br>Tarkista, että finprev_data.csv on sivun kanssa samassa kansiossa ja että sivua käytetään verkkopalvelimen kautta.</div>`;
+        console.error("FINPREV-aineiston lataus epäonnistui:", error);
+      }
+    }
+    const types = [
+      {label:"Vaikuttavuusarvioinnit", value:"Vaikuttavuusarviointi", fields:[["Toimenpideluokka","Toimenpideluokka"],["Näyttötaso","Näyttötaso"],["Vaikuttavuus","Vaikuttavuus"],["Vuosi","Vuosi"]], columns:["Toimi","Vaikuttavuus","Näyttötaso","Toimenpideluokka","Kustannusarvio","Viitetiedot"]},
+      {label:"Prosessiarvioinnit (keskeneräinen)", value:"Prosessiarviointi", fields:[["Vuosi","Vuosi"],["Toimenpideluokka","Toimenpideluokka"]], columns:["Toimi","Toimenpideluokka","Viitetiedot"]},
+      {label:"Systemaattiset kirjallisuuskatsaukset", value:"Systemaattinen kirjallisuuskatsaus", fields:[["Vuosi","Vuosi"],["Tyyppi_systk","Tyyppi"]], columns:["Toimenpideluokka","Sisällytetyt tutkimukset","Pohjoismaalaisuusaste","Päätulokset","Toimi","Tyyppi","Viitetiedot"]}
+    ];
+    let selected = types[0], filters = {}, sortOrder = "year", setupRange = [0,5], yearRange = [0,0];
+    const typesEl=document.querySelector("#types"), filtersEl=document.querySelector("#filters"), resultsEl=document.querySelector("#results"), countEl=document.querySelector("#count"), backToTop=document.querySelector("#back-to-top");
+    window.addEventListener("scroll",()=>{backToTop.hidden=window.scrollY===0},{passive:true});
+    backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+    function values(field){return [...new Set(rows.filter(r=>r["Tyyppi"]===selected.value).map(r=>String(r[field]??"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fi",{numeric:true}));}
+    function availableYears(){return values("Vuosi").map(Number).filter(Number.isFinite).sort((a,b)=>a-b)}
+    function renderTypes(){typesEl.innerHTML=types.map((t,i)=>`<button type="button" class="type-button ${t===selected?"active":""}" aria-pressed="${t===selected}" data-index="${i}">${t.label}</button>`).join("");typesEl.querySelectorAll("button").forEach(b=>b.onclick=()=>{selected=types[+b.dataset.index];filters={};setupRange=[0,5];yearRange=[0,0];render()})}
+    function renderFilters(){const years=availableYears();if(years.length)yearRange=[yearRange[0]||years[0],yearRange[1]||years[years.length-1]];filtersEl.innerHTML=selected.fields.map(([field,label])=>`<div class="select-wrap ${field==="Vuosi"?(selected.value==="Vaikuttavuusarviointi"?"full-range":"wide-range"):""}"><label for="filter-${field.replaceAll(" ","-")}">${label}${field==="Näyttötaso"?`<button class="help" type="button" aria-label="Tietoa Näyttötaso-kategoriasta" aria-expanded="false">?<span class="help-text" role="tooltip">Arviointitutkimuksen näyttötaso Marylandin asteikolla. Mittaa sitä, kuinka vahvaa näyttöä tutkimus antaa vaikuttavuudesta.
+1. Korrelatiivinen, toimenpide ja vaste mitattu samalla hetkellä
+2. Vaste mitattu ennen ja jälkeen toimenpiteen vain koeryhmässä
+3. Ennen ja jälkeen -mittaukset koe- ja vertailuryhmässä, ei muiden riskitekijöiden vakiointia
+4. Ennen ja jälkeen -mittaukset koe- ja vertailuryhmässä, muiden riskitekijöiden vakiointia
+5. Satunnaistettu koeasetelma.</span></button>`:""}</label>${field==="Näyttötaso"&&selected.value==="Vaikuttavuusarviointi"?`<div class="range-control"><div class="range-values"><div class="range-track"></div><div class="range-selected" id="range-selected"></div><input class="range-input" id="setup-min" type="range" min="0" max="5" step="1" value="${setupRange[0]}" aria-label="Näyttötason vähimmäisarvo"><input class="range-input" id="setup-max" type="range" min="0" max="5" step="1" value="${setupRange[1]}" aria-label="Näyttötason enimmäisarvo"></div><div class="range-labels"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>`:field==="Vuosi"?`<div class="range-control"><div class="range-values"><div class="range-track"></div><div class="range-selected" id="year-selected"></div><input class="range-input" id="year-min" type="range" min="${years[0]}" max="${years[years.length-1]}" step="1" value="${yearRange[0]}" aria-label="Vuoden vähimmäisarvo"><input class="range-input" id="year-max" type="range" min="${years[0]}" max="${years[years.length-1]}" step="1" value="${yearRange[1]}" aria-label="Vuoden enimmäisarvo"></div><div class="range-labels"><span id="year-label-min">${yearRange[0]}</span><span id="year-label-max">${yearRange[1]}</span></div></div>`:`<select id="filter-${field.replaceAll(" ","-")}" data-field="${field}"><option value="">Kaikki</option>${values(field).map(v=>`<option>${escapeHtml(v)}</option>`).join("")}</select>`}</div>`).join("");filtersEl.querySelectorAll("select").forEach(s=>{s.value=filters[s.dataset.field]||"";s.onchange=()=>{filters[s.dataset.field]=s.value;renderResults()}});filtersEl.querySelectorAll(".help").forEach(help=>help.onclick=()=>help.setAttribute("aria-expanded",help.getAttribute("aria-expanded")!=="true"));const setupMin=document.querySelector("#setup-min"),setupMax=document.querySelector("#setup-max"),yearMin=document.querySelector("#year-min"),yearMax=document.querySelector("#year-max");const bindRange=(minInput,maxInput,key,barId)=>{if(!minInput||!maxInput)return;const updateRange=()=>{let min=Number(minInput.value),max=Number(maxInput.value);if(min>max){if(document.activeElement===minInput)min=maxInput.value;else max=minInput.value;min=Number(min);max=Number(max)}if(key==="setupRange")setupRange=[min,max];else yearRange=[min,max];const selectedBar=document.querySelector(`#${barId}`);const lower=Number(minInput.min),upper=Number(minInput.max);selectedBar.style.left=`${((min-lower)/(upper-lower))*100}%`;selectedBar.style.right=`${100-((max-lower)/(upper-lower))*100}%`;if(key==="yearRange"){document.querySelector("#year-label-min").textContent=min;document.querySelector("#year-label-max").textContent=max}renderResults()};minInput.oninput=updateRange;maxInput.oninput=updateRange;updateRange()};bindRange(setupMin,setupMax,"setupRange","range-selected");bindRange(yearMin,yearMax,"yearRange","year-selected")}
+    function sortResults(items){return items.sort((a,b)=>{if(sortOrder==="author")return String(a["Tutkimus"]||"").localeCompare(String(b["Tutkimus"]||""),"fi");if(sortOrder==="impact"){const av=Number(a["Vaikuttavuus (numeerinen)"]),bv=Number(b["Vaikuttavuus (numeerinen)"]);return (Number.isFinite(av)?av:Infinity)-(Number.isFinite(bv)?bv:Infinity)}const av=Number(a["Vuosi"]),bv=Number(b["Vuosi"]);return (Number.isFinite(bv)?bv:-Infinity)-(Number.isFinite(av)?av:-Infinity)})}
+    function displayValue(value){return value===null||value===undefined||String(value).trim()===""?"–":String(value)}
+    function cardValue(row,column){return column==="Tyyppi"&&selected.value==="Systemaattinen kirjallisuuskatsaus"?row["Tyyppi_systk"]:row[column]}
+    function formatNordicShare(value){if(value===null||value===undefined||String(value).trim()==="")return "–";const number=Number(value);return Number.isFinite(number)?`${(number*100).toLocaleString("fi-FI",{maximumFractionDigits:0,useGrouping:false})}%`:String(value)}
+    function renderResults(){
+      const matching=sortResults(rows.filter(r=>r["Tyyppi"]===selected.value&&selected.fields.every(([f])=>f==="Näyttötaso"&&selected.value==="Vaikuttavuusarviointi"?(()=>{const value=Number(r[f]);return Number.isFinite(value)&&value>=setupRange[0]&&value<=setupRange[1]})():f==="Vuosi"?(()=>{const value=Number(r[f]);return Number.isFinite(value)&&value>=yearRange[0]&&value<=yearRange[1]})():!filters[f]||String(r[f]??"").trim()===filters[f])));
+      countEl.textContent=`${matching.length} tulosta`;
+      resultsEl.innerHTML=matching.length?matching.map(r=>`<article class="result-card"><h3>${escapeHtml(displayValue(r["Otsikko"]))}${String(r["Otsikon selite"]??"").trim()?` <button class="help" type="button" aria-label="Lisätietoja: ${escapeHtml(displayValue(r["Otsikko"]))}" aria-expanded="false">?<span class="help-text" role="tooltip">${escapeHtml(r["Otsikon selite"])}</span></button>`:""}</h3><div class="meta"><span><strong>Tekijä(t):</strong> ${escapeHtml(displayValue(r["Tutkimus"]))}</span><span><strong>Vuosi:</strong> ${escapeHtml(displayValue(r["Vuosi"]))}</span></div><dl class="details ${selected.value==="Prosessiarviointi"?"process-details":"compact"}">${selected.columns.filter(c=>c!=="Viitetiedot").map(c=>{
+        const value=cardValue(r,c);
+        const circular=selected.value==="Vaikuttavuusarviointi"&&c==="Näyttötaso"||selected.value==="Systemaattinen kirjallisuuskatsaus"&&c==="Pohjoismaalaisuusaste";
+        return `<div class="detail"><dt>${escapeHtml(c)}${selected.value==="Systemaattinen kirjallisuuskatsaus"&&c==="Pohjoismaalaisuusaste"?` <button class="help" type="button" aria-label="Tietoa Pohjoismaalaisuusasteesta" aria-expanded="false">?<span class="help-text" role="tooltip">Pohjoismaalaisuusaste on prosenttiosuus, joka kuvaa sitä, kuinka suuri osa systemaattiseen katsaukseen sisällytetyistä toimenpiteistä on toteutettu Pohjoismaissa. Asteen mittaaminen on tutkimuksellisesti olennaista samankaltaisten yhteiskuntien toisiinsa vertaamisen tärkeyden vuoksi.</span></button>`:""}</dt><dd>${circular?`<span class="setup-value">${escapeHtml(selected.value==="Systemaattinen kirjallisuuskatsaus"?formatNordicShare(value):displayValue(value))}</span>`:`${escapeHtml(displayValue(value))}${selected.value==="Vaikuttavuusarviointi"&&c==="Vaikuttavuus"&&r["Otsikko"]==="Perustulokokeilu"?` <button class="help plus-help" type="button" aria-label="Tietoa Perustulokokeilun vaikuttavuudesta" aria-expanded="false">+<span class="help-text" role="tooltip">Ei havaittu vaikutusta <strong>rikollisuuteen</strong>.</span></button>`:""}`}</dd></div>`;
+      }).join("")}${selected.columns.includes("Viitetiedot")?`<div class="detail citation-detail"><dt>Viitetiedot</dt><dd>${escapeHtml(displayValue(r["Viitetiedot"]))}</dd></div>`:""}</dl></article>`).join(""):`<div class="panel empty">Valituilla rajauksilla ei löytynyt tuloksia.</div>`;
+      resultsEl.querySelectorAll(".help").forEach(help=>help.onclick=()=>help.setAttribute("aria-expanded",help.getAttribute("aria-expanded")!=="true"));
+    }
+    function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+    function render(){if(selected.value!=="Vaikuttavuusarviointi"&&sortOrder==="impact")sortOrder="year";const impactSort=document.querySelector("#sort option[value=\"impact\"]");impactSort.hidden=selected.value!=="Vaikuttavuusarviointi";renderTypes();renderFilters();document.querySelector("#sort").value=sortOrder;renderResults()}document.querySelector("#sort").onchange=event=>{sortOrder=event.target.value;renderResults()};document.querySelector("#clear").onclick=()=>{filters={};setupRange=[0,5];yearRange=[0,0];sortOrder="year";render()};loadRows();
+  </script>
+</body>
+</html>
